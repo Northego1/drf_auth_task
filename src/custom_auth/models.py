@@ -41,6 +41,20 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
 
 
+class RefreshJwt(models.Model):
+    id = models.UUIDField(
+        primary_key=True,
+        default=uuid.uuid4,
+        editable=False,
+    )
+    user_id = models.ForeignKey(
+        CustomUser,
+        on_delete=models.CASCADE,
+        related_name="refresh_tokens",
+        db_index=True,
+    )
+    expire_at = models.DateField(null=False)
+
 
 
 

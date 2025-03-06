@@ -1,26 +1,27 @@
 import uuid
-from datetime import timedelta
+from datetime import datetime, timedelta
 from time import timezone
-from typing import Any, Literal
+from typing import Any
 
 import jwt
 from django.utils import timezone
 
+from src import settings as st
+
 
 def create_jwt(
         payload: dict[str, Any],
-        token_type: Literal["access", "refresh"],
+        token_type: st.JwtType,
 ) -> str:
-    expire = 5 if token_type == "access" else 60
-
+    expire = st.ACCESS_JWT_EXPIRE if token_type == st.JwtType.ACCESS else st.REFRESH_JWT_EXPIRE
     payload.update(
         {
-            "jti": uuid.uuid4(),
+            "jti": str(uuid.uuid4()),
             "type": token_type,
-            "exp": timezone.now() + timedelta(minutes=expire),
+            "exp": (timezone.now() + timedelta(minutes=expire)).timestamp(),
         },
     )
-    return jwt.encode(payload=payload, key="PRIVATE_SECRET", algorithm="HS256")
+    return jwt.encode(payload=payload, key="SECRET", algorithm="HS256")
 
 
 def decode_and_verify_jwt(
@@ -28,6 +29,7 @@ def decode_and_verify_jwt(
 ) -> dict[str, Any] | None:
     """ returns None if token is invalid"""
     try:
-        return jwt.decode(token, key="PUBLIC_SECRET", algorithms=["HS256"])
+        return jwt.decode(token, key="SECRET", algorithms=["HS256"])
     except jwt.exceptions.PyJWTError:
         return None
+
