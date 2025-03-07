@@ -37,7 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'custom_auth.apps.CustomAuth'
+    'custom_auth.apps.CustomAuth',
+    'books_store.apps.BooksStoreConfig'
 ]
 
 MIDDLEWARE = [

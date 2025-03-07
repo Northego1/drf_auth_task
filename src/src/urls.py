@@ -17,9 +17,11 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import include, path
 
-from custom_auth.api.urls import router
+import books_store.api.urls
+import custom_auth.api.urls
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('api/', include(router.urls)),
+    path("admin/", admin.site.urls),
+    path("api/", include(custom_auth.api.urls.router.urls)),
+    path("api/", include(books_store.api.urls.router.urls)),
 ]
